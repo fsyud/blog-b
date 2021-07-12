@@ -46,13 +46,18 @@
     path: '/article',
     name: 'article',
     icon: 'smile',
-    component: './Article',
     routes: [
       {
         path: '/article/create',
         name: 'article-create',
         icon: 'smile',
-        component: './Article',
+        component: './Article/creat',
+      },
+      {
+        path: '/article/list',
+        name: 'article-list',
+        icon: 'table',
+        component: './Article/list',
       },
     ],
   },

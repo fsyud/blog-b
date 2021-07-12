@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { Card } from 'antd';
 import BraftEditor from 'braft-editor';
-import { Drawer, Button } from 'antd';
+import { Drawer, Button, Card } from 'antd';
 import 'braft-editor/dist/index.css';
 
 import styles from './index.less';
 
-const Article: React.FC = () => {
-  const [value, setValue] = useState<any>(
-    BraftEditor.createEditorState('<p>nice <b>day!</b></p>'),
-  );
+const ArticleCreat: React.FC = () => {
+  const [value, setValue] = useState<any>(BraftEditor.createEditorState('<p>nice <b>day!</b></p>'));
   const [visible, setVisible] = useState<boolean>(false);
 
   // 预览
@@ -26,9 +23,7 @@ const Article: React.FC = () => {
     },
   ];
 
-  const submit = async (): Promise<any> => {
-
-  }
+  const submit = async (): Promise<any> => {};
 
   return (
     <div className={styles.creat_article}>
@@ -45,7 +40,7 @@ const Article: React.FC = () => {
           }}
           extendControls={extendControls}
         />
-        
+
         <Drawer
           title="预览"
           placement="right"
@@ -61,10 +56,9 @@ const Article: React.FC = () => {
             }}
           />
         </Drawer>
-
       </Card>
     </div>
   );
 };
 
-export default Article;
+export default ArticleCreat;
