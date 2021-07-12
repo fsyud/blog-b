@@ -63,7 +63,7 @@ const ArticleList: React.FC<{}> = () => {
   ];
 
   return (
-    <div className={styles.art_list}>
+    <div>
       <Card bordered={false}>
         <Form form={form} name="article_list_header">
           <Form.Item name="main_text">
