@@ -52,4 +52,5 @@ export default {
   'menu.article': '文章',
   'menu.article.article-create': '新建文章',
   'menu.article.article-list': '文章列表',
+  'menu.userlist': '用户列表',
 };

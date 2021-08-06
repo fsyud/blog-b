@@ -50,6 +50,9 @@ const errorHandler = (error: { response: Response }): Response => {
 const request = extend({
   errorHandler, // default error handling
   credentials: 'include', // Does the default request bring cookies
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('STARRY_STAR_SKY')}`,
+  },
 });
 
 export default request;

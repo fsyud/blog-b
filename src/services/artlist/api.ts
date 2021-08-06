@@ -5,6 +5,16 @@ export type homeListParamsType = {
   pageSize?: number;
 };
 
+export type createArtParamsType = {};
+
+// 写文章
+export async function createArticle(params: createArtParamsType) {
+  return request('/api/home/create', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 // 获取文章列表
 export async function getArticleList(params: homeListParamsType) {
   return request('/api/home/list', {

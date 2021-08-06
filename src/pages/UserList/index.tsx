@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Input, Form, Button, Table, message } from 'antd';
-import { getArticleList, deleteArticleList } from '@/services/artlist/api';
+import { getUserList, deleteUser } from '@/services/user';
 
-const ArticleList: React.FC<{}> = () => {
+const UserList: React.FC<{}> = () => {
   const [page, setPage] = useState<number>(1);
   const [listData, setListData] = useState<any[]>([]);
 
   const [form] = Form.useForm();
 
   const getArtList = async (): Promise<any> => {
-    const res: API.reponseData = await getArticleList({
-      page: 1,
-      pageSize: 15,
-    });
+    const res: API.reponseData = await getUserList();
     if (res && Array.isArray(res.data)) {
       setListData(res.data);
     }
@@ -25,7 +22,7 @@ const ArticleList: React.FC<{}> = () => {
   const onCheck = async () => {};
 
   const onCancel = async (params: any) => {
-    const { data } = await deleteArticleList(params);
+    const { data } = await deleteUser(params);
     if (data) {
       message.info(data.msg);
       getArtList();
@@ -34,16 +31,16 @@ const ArticleList: React.FC<{}> = () => {
 
   const columns: any[] = [
     {
-      title: '文章标题',
-      dataIndex: 'title',
+      title: '用户名',
+      dataIndex: 'name',
     },
     {
       title: '类型',
       dataIndex: 'type',
     },
     {
-      title: '作者',
-      dataIndex: 'author',
+      title: '密码',
+      dataIndex: 'password',
     },
     {
       title: '操作',
@@ -94,4 +91,4 @@ const ArticleList: React.FC<{}> = () => {
   );
 };
 
-export default ArticleList;
+export default UserList;

@@ -1,6 +1,6 @@
 import type { Effect } from 'dva';
 import { message } from 'antd';
-import { deleteArticleList } from '@/services/artlist/api';
+import { deleteArticleList, createArticle } from '@/services/artlist/api';
 
 export type CuurrentArt = {};
 export interface ArticleModelType {
@@ -9,6 +9,7 @@ export interface ArticleModelType {
     list: any[];
   };
   effects: {
+    createArticle: Effect;
     deleteArticle: Effect;
   };
   reducers: {};
@@ -20,8 +21,13 @@ const ArticleModel: ArticleModelType = {
     list: [],
   },
   effects: {
+    *createArticle({ payload }, { call }) {
+      const { data } = yield call(createArticle, payload);
+      if (data) {
+        message.info(data.msg);
+      }
+    },
     *deleteArticle({ payload }, { call }) {
-      console.log(payload);
       const { data } = yield call(deleteArticleList, payload);
       if (data) {
         message.info(data.msg);
