@@ -45,10 +45,11 @@ const UserList: React.FC<{}> = () => {
   const columns: any[] = [
     {
       title: '头像',
+      with: 50,
       dataIndex: 'avatar_url',
       key: 'avatar_url',
       render: (value: string) => {
-        return <img src={value} alt="avatar" />;
+        return <img style={{ width: 50 }} src={value} alt="avatar" />;
       },
     },
     {
