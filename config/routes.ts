@@ -35,6 +35,27 @@
     ],
   },
   {
+    path: '/comment',
+    name: 'comment',
+    icon: 'smile',
+    routes: [
+      {
+        path: '/comment/one-comment',
+        name: 'one-comment',
+        icon: 'smile',
+        component: './Comment/OneComment',
+        title: '后台-一级评论',
+      },
+      {
+        path: '/comment/two-comment',
+        name: 'two-comment',
+        icon: 'table',
+        component: './Comment/TwoComment',
+        title: '后台-二级评论',
+      },
+    ],
+  },
+  {
     path: '/',
     redirect: '/article/list',
   },

@@ -30,3 +30,19 @@ export async function deleteUser(params: number | string) {
     },
   });
 }
+
+// 用户注册
+export async function userRegister(params: API.userInfo) {
+  return request('/api/login/register', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+// 用户修改信息
+export async function userUpdate(params: API.updateUser) {
+  return request('/api/login/update_userinfo', {
+    method: 'POST',
+    data: params,
+  });
+}

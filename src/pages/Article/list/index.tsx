@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Form, Button, Table, message } from 'antd';
+import { Card, Input, Form, Button, Table, message, Divider } from 'antd';
 import { getArticleList, deleteArticleList } from '@/services/artlist/api';
 import styles from './index.less';
 
@@ -23,8 +23,6 @@ const ArticleList: React.FC<{}> = () => {
     getArtList();
   }, []);
 
-  const onCheck = async () => {};
-
   const onCancel = async (params: any) => {
     const { data } = await deleteArticleList(params);
     if (data) {
@@ -34,6 +32,16 @@ const ArticleList: React.FC<{}> = () => {
   };
 
   const columns: any[] = [
+    {
+      title: '封面图片',
+      with: 50,
+      dataIndex: 'img_url',
+      key: 'img_url',
+      render: (value: string) => {
+        return <img style={{ width: 50 }} src={value} alt="avatar" />;
+      },
+    },
+
     {
       title: '文章标题',
       dataIndex: 'title',
@@ -67,20 +75,26 @@ const ArticleList: React.FC<{}> = () => {
     },
   ];
 
+  // 提交
+  const onFinish = async (values: any): Promise<any> => {
+    console.log(values);
+  };
+
   return (
     <div className={styles.art_list}>
-      <Card bordered={false}>
-        <Form form={form} name="article_list_header">
+      <Card bordered={false} className={styles.search}>
+        <Form onFinish={onFinish} form={form} layout="inline" name="article_list_header">
           <Form.Item name="main_text">
             <Input placeholder="请输入关键字" width={200} />
           </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              搜索
+            </Button>
+          </Form.Item>
         </Form>
-
-        <Button type="primary" onClick={onCheck}>
-          搜索
-        </Button>
       </Card>
-
+      <Divider />
       <Card bordered={false}>
         <Table
           key="article-table-list"

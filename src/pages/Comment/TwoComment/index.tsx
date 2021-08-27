@@ -11,24 +11,20 @@ import {
   Drawer,
   Divider,
   Upload,
-  Radio,
 } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import { getUserList, deleteUser, userUpdate } from '@/services/user';
+import { getUserList, deleteUser } from '@/services/user';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import LoginModal from '@/components/Sky/LoginModal';
 import styles from './index.less';
 
 const { TextArea } = Input;
 
-const UserList: React.FC<{}> = () => {
+const TwoComment: React.FC<{}> = () => {
   const [page, setPage] = useState<number>(1);
   const [listData, setListData] = useState<any[]>([]);
   const [visible, setVisible] = useState<boolean>(false);
   const [imgurl, setImgurl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [modalVisable, setModalVisable] = useState<boolean>(false);
-  const [editInfo, seteditInfo] = useState<any>(null);
 
   const [form] = Form.useForm();
   const [formUser] = Form.useForm();
@@ -46,13 +42,6 @@ const UserList: React.FC<{}> = () => {
     getArtList();
   }, []);
 
-  useEffect(() => {
-    if (editInfo) {
-      formUser.setFieldsValue(editInfo);
-      setImgurl(editInfo?.avatar_url);
-    }
-  }, [editInfo, formUser]);
-
   // 删除
   const onCancel = async (params: any) => {
     const { data } = await deleteUser(params);
@@ -62,18 +51,26 @@ const UserList: React.FC<{}> = () => {
     }
   };
 
+  // 编辑
+  // const onEdit = async (params: any) => {
+  //   const { data } = await deleteUser(params);
+  //   if (data) {
+  //     message.info(data.msg);
+  //     getArtList();
+  //   }
+  // };
+
   const getBase64 = (img: any, callback: any) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onChange = ({ file, fileList, event }: any) => {
+  const onChange = ({ file }: any) => {
     if (file?.response?.code === 0) {
-      const { path } = file.response.data;
-      getBase64(file.originFileObj, () => {
-        setImgurl(path);
+      // const { path } = file.response.data;
+      getBase64(file.originFileObj, (imageUrl: any) => {
+        setImgurl(imageUrl);
         setLoading(false);
       });
     }
@@ -88,29 +85,7 @@ const UserList: React.FC<{}> = () => {
 
   // 提交
   const onFinish = async (values: any): Promise<any> => {
-    // eslint-disable-next-line no-underscore-dangle
-    const params = { ...values, ...{ id: editInfo?._id, avatar_url: imgurl } };
-
-    const data = await userUpdate(params);
-
-    if (data.code === 0) {
-      message.success('修改成功！');
-      setVisible(false);
-      seteditInfo(null);
-      formUser.resetFields();
-      setImgurl('');
-      getArtList();
-    } else {
-      message.error('修改失败！');
-    }
-  };
-
-  // 注册成功
-  const onSuccessLogin = (params: boolean): void => {
-    if (params) {
-      setModalVisable(false);
-      getArtList();
-    }
+    console.log(values);
   };
 
   const beforeUpload = (file: any) => {
@@ -174,7 +149,6 @@ const UserList: React.FC<{}> = () => {
             key="config"
             onClick={() => {
               setVisible(true);
-              seteditInfo(record);
             }}
           >
             编辑
@@ -200,7 +174,7 @@ const UserList: React.FC<{}> = () => {
   return (
     <div className={styles.user_list}>
       <Card bordered={false} className={styles.search}>
-        <Form onFinish={() => {}} form={form} layout="inline" name="article_list_header">
+        <Form onFinish={onFinish} form={form} layout="inline" name="article_list_header">
           <Form.Item name="main_text">
             <Input placeholder="请输入关键字" width={200} />
           </Form.Item>
@@ -213,9 +187,7 @@ const UserList: React.FC<{}> = () => {
       </Card>
       <Divider />
       <Card bordered={false} className={styles.tool}>
-        <Button type="primary" onClick={() => setModalVisable(true)}>
-          用户注册
-        </Button>
+        <Button type="primary">用户注册</Button>
       </Card>
 
       <Card bordered={false}>
@@ -237,12 +209,7 @@ const UserList: React.FC<{}> = () => {
         placement="right"
         closable={false}
         width={700}
-        onClose={() => {
-          setVisible(false);
-          seteditInfo(null);
-          formUser.resetFields();
-          setImgurl('');
-        }}
+        onClose={() => setVisible(false)}
         visible={visible}
       >
         <Form
@@ -271,22 +238,6 @@ const UserList: React.FC<{}> = () => {
             </ImgCrop>
             <span className={styles.upload_tips}>建议尺寸：1303*734px</span>
           </Form.Item>
-          <Form.Item label="账号" name="name">
-            <Input placeholder="填写你的账号" />
-          </Form.Item>
-          <Form.Item label="密码" name="password">
-            <Input placeholder="填写你的密码" />
-          </Form.Item>
-          <Form.Item
-            label="角色"
-            name="type"
-            rules={[{ required: true, message: '请选择角色权限！' }]}
-          >
-            <Radio.Group>
-              <Radio value="1">管理员</Radio>
-              <Radio value="2">游客</Radio>
-            </Radio.Group>
-          </Form.Item>
           <Form.Item label="用户名" name="username">
             <Input placeholder="填写你的用户名" />
           </Form.Item>
@@ -314,18 +265,8 @@ const UserList: React.FC<{}> = () => {
           </Form.Item>
         </Form>
       </Drawer>
-      <LoginModal
-        visible={modalVisable}
-        onSuccessLogin={onSuccessLogin}
-        maskClosable
-        closable
-        title="注册"
-        onCancel={() => {
-          setModalVisable(false);
-        }}
-      />
     </div>
   );
 };
 
-export default UserList;
+export default TwoComment;

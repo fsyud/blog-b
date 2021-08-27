@@ -53,4 +53,7 @@ export default {
   'menu.article.article-create': '新建文章',
   'menu.article.article-list': '文章列表',
   'menu.userlist': '用户列表',
+  'menu.comment': '评论',
+  'menu.comment.one-comment': '一级评论',
+  'menu.comment.two-comment': '二级评论',
 };
