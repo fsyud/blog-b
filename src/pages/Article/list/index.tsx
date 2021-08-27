@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Input, Form, Button, Table, message } from 'antd';
 import { getArticleList, deleteArticleList } from '@/services/artlist/api';
+import styles from './index.less';
 
 const ArticleList: React.FC<{}> = () => {
   const [page, setPage] = useState<number>(1);
@@ -36,18 +37,22 @@ const ArticleList: React.FC<{}> = () => {
     {
       title: '文章标题',
       dataIndex: 'title',
+      key: 'title',
     },
     {
       title: '类型',
       dataIndex: 'type',
+      key: 'type',
     },
     {
       title: '作者',
       dataIndex: 'author',
+      key: 'author',
     },
     {
       title: '操作',
       dataIndex: 'option',
+      key: 'option',
       render: (value: any, record: any) => [
         <a
           key="config"
@@ -63,7 +68,7 @@ const ArticleList: React.FC<{}> = () => {
   ];
 
   return (
-    <div>
+    <div className={styles.art_list}>
       <Card bordered={false}>
         <Form form={form} name="article_list_header">
           <Form.Item name="main_text">
@@ -78,8 +83,9 @@ const ArticleList: React.FC<{}> = () => {
 
       <Card bordered={false}>
         <Table
+          key="article-table-list"
           columns={columns}
-          rowKey="artListKey"
+          rowKey="article-table-list"
           dataSource={listData}
           pagination={{
             total: 100,

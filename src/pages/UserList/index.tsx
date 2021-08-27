@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Form, Button, Table, message } from 'antd';
+import { Card, Input, Form, Button, Table, message, Space, Popconfirm } from 'antd';
 import { getUserList, deleteUser } from '@/services/user';
 import styles from './index.less';
 
@@ -8,6 +8,8 @@ const UserList: React.FC<{}> = () => {
   const [listData, setListData] = useState<any[]>([]);
 
   const [form] = Form.useForm();
+
+  const text = '您确定要删除此数据吗？';
 
   const getArtList = async (): Promise<any> => {
     const res: API.reponseData = await getUserList();
@@ -42,40 +44,71 @@ const UserList: React.FC<{}> = () => {
 
   const columns: any[] = [
     {
-      title: '用户名',
+      title: '头像',
+      dataIndex: 'avatar_url',
+      key: 'avatar_url',
+      render: (value: string) => {
+        return <img src={value} alt="avatar" />;
+      },
+    },
+    {
+      title: '账号',
       dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '用户名',
+      dataIndex: 'username',
+      key: 'username',
     },
     {
       title: '类型',
       dataIndex: 'type',
+      key: 'type',
+      render: (value: string) => {
+        return value === '1' ? '管理员' : '注册会员';
+      },
     },
     {
-      title: '密码',
-      dataIndex: 'password',
+      title: '工作',
+      dataIndex: 'job',
+      key: 'job',
+    },
+    {
+      title: '个人介绍',
+      dataIndex: 'introduce',
+      key: 'introduce',
     },
     {
       title: '操作',
       dataIndex: 'option',
-      render: (value: any, record: any) => [
-        <a
-          key="config"
-          onClick={() => {
-            const { _id } = record;
-            onEdit(_id);
-          }}
-        >
-          编辑
-        </a>,
-        <a
-          key="config"
-          onClick={() => {
-            const { _id } = record;
-            onCancel(_id);
-          }}
-        >
-          删除
-        </a>,
-      ],
+      key: 'option',
+      render: (value: any, record: any) => (
+        <Space size="middle">
+          <a
+            key="config"
+            onClick={() => {
+              const { _id } = record;
+              onEdit(_id);
+            }}
+          >
+            编辑
+          </a>
+          <Popconfirm
+            placement="topRight"
+            style={{ width: 100 }}
+            title={text}
+            onConfirm={() => {
+              const { _id } = record;
+              onCancel(_id);
+            }}
+            okText="确认"
+            cancelText="否"
+          >
+            <a>删除</a>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 
@@ -96,7 +129,7 @@ const UserList: React.FC<{}> = () => {
       <Card bordered={false}>
         <Table
           columns={columns}
-          rowKey="artListKey"
+          rowKey="user-list-table"
           dataSource={listData}
           pagination={{
             total: 100,
