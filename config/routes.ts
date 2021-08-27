@@ -11,6 +11,7 @@
     name: 'userlist',
     icon: 'smile',
     component: './UserList',
+    title: '后台-用户列表',
   },
   {
     path: '/article',
@@ -22,12 +23,14 @@
         name: 'article-create',
         icon: 'smile',
         component: './Article/creat',
+        title: '后台-写文章',
       },
       {
         path: '/article/list',
         name: 'article-list',
         icon: 'table',
         component: './Article/list',
+        title: '后台-文章列表',
       },
     ],
   },

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Input, Form, Button, Table, message } from 'antd';
 import { getUserList, deleteUser } from '@/services/user';
+import styles from './index.less';
 
 const UserList: React.FC<{}> = () => {
   const [page, setPage] = useState<number>(1);
@@ -21,7 +22,17 @@ const UserList: React.FC<{}> = () => {
 
   const onCheck = async () => {};
 
+  // 删除
   const onCancel = async (params: any) => {
+    const { data } = await deleteUser(params);
+    if (data) {
+      message.info(data.msg);
+      getArtList();
+    }
+  };
+
+  // 编辑
+  const onEdit = async (params: any) => {
     const { data } = await deleteUser(params);
     if (data) {
       message.info(data.msg);
@@ -50,6 +61,15 @@ const UserList: React.FC<{}> = () => {
           key="config"
           onClick={() => {
             const { _id } = record;
+            onEdit(_id);
+          }}
+        >
+          编辑
+        </a>,
+        <a
+          key="config"
+          onClick={() => {
+            const { _id } = record;
             onCancel(_id);
           }}
         >
@@ -60,7 +80,7 @@ const UserList: React.FC<{}> = () => {
   ];
 
   return (
-    <div>
+    <div className={styles.user_list}>
       <Card bordered={false}>
         <Form form={form} name="article_list_header">
           <Form.Item name="main_text">
