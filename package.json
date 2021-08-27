@@ -1,8 +1,10 @@
 {
-  "name": "ant-design-pro",
-  "version": "5.0.0-beta.2",
+  "name": "blog-b",
+  "version": "1.0.0",
+  "description": "基于react、antd-pro开发的博客b端，功能实现了文章过滤筛选，评论、多角色权限、移动端适配、图片上传、在线文章书写等功能。后端服务基于nestjs。后续可能会升级ssr的版本，谢谢关注！",
+  "author": "naze",
+  "license": "MIT",
   "private": true,
-  "description": "An out-of-box UI solution for enterprise applications",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
@@ -33,6 +35,18 @@
     "test:component": "umi test ./src/components",
     "tsc": "tsc --noEmit"
   },
+  "engines": {
+    "npm": ">=6.14.11",
+    "node": ">=14.16.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/starryskystar/blog-b"
+  },
+  "bugs": {
+    "url": "https://github.com/starryskystar/blog-b/issues"
+  },
+  "homepage": "https://www.starryskystar.space/",
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
     "**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
@@ -100,8 +114,5 @@
     "puppeteer-core": "^8.0.0",
     "stylelint": "^13.0.0",
     "typescript": "^4.2.2"
-  },
-  "engines": {
-    "node": ">=10.0.0"
   }
 }

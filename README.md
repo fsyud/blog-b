@@ -1,57 +1,65 @@
-# Ant Design Pro
+<h1 align="center">Welcome to blog-b 👋</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
+  <img src="https://img.shields.io/badge/npm-%3E%3D6.14.11-blue.svg" />
+  <img src="https://img.shields.io/badge/node-%3E%3D14.16.0-blue.svg" />
+  <a href="https://github.com/starryskystar/blog-b#readme" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="https://github.com/starryskystar/blog-b/graphs/commit-activity" target="_blank">
+    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
+  </a>
+  <a href="https://github.com/starryskystar/blog-b/blob/master/LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/github/license/starryskystar/blog-b" />
+  </a>
+</p>
 
-This project is initialized with [Ant Design Pro](https://pro.ant.design). Follow is the quick guide for how to use.
+> 基于 react、antd-pro 开发的博客 b 端，功能实现了文章过滤筛选，评论、多角色权限、移动端适配、图片上传、在线文章书写等功能。后端服务基于 nestjs。后续可能会升级 ssr 的版本，谢谢关注！
 
-## Environment Prepare
+### 🏠 [Homepage](https://www.starryskystar.space/)
 
-Install `node_modules`:
+## Prerequisites
 
-```bash
+- npm >=6.14.11
+- node >=14.16.0
+
+## Install
+
+```sh
 npm install
 ```
 
-or
+## Usage
 
-```bash
-yarn
+```sh
+npm run start
 ```
 
-## Provided Scripts
+## Run tests
 
-Ant Design Pro provides some useful script to help you quick start and build with web project, code style check and test.
-
-Scripts provided in `package.json`. It's safe to modify or add additional script:
-
-### Start project
-
-```bash
-npm start
+```sh
+npm run test
 ```
 
-### Build project
+## Author
 
-```bash
-npm run build
-```
+👤 **@starry777777**
 
-### Check code style
+- Website: www.starryskystar.space
+- Github: [@starryskystar](https://github.com/starryskystar)
 
-```bash
-npm run lint
-```
+## 🤝 Contributing
 
-You can also use script to auto fix some lint error:
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/starryskystar/blog-b/issues). You can also take a look at the [contributing guide](https://github.com/starryskystar/blog-b/blob/master/CONTRIBUTING.md).
 
-```bash
-npm run lint:fix
-```
+## Show your support
 
-### Test code
+Give a ⭐️ if this project helped you!
 
-```bash
-npm test
-```
+## 📝 License
 
-## More
+Copyright © 2021 [@starry777777](https://github.com/starryskystar).<br /> This project is [MIT](https://github.com/starryskystar/blog-b/blob/master/LICENSE) licensed.
 
-You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
+---
+
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
