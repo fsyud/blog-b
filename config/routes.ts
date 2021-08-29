@@ -16,7 +16,7 @@
   {
     path: '/article',
     name: 'article',
-    icon: 'smile',
+    icon: 'table',
     routes: [
       {
         path: '/article/create',
@@ -37,7 +37,7 @@
   {
     path: '/comment',
     name: 'comment',
-    icon: 'smile',
+    icon: 'table',
     routes: [
       {
         path: '/comment/one-comment',
@@ -52,6 +52,20 @@
         icon: 'table',
         component: './Comment/TwoComment',
         title: '后台-二级评论',
+      },
+    ],
+  },
+  {
+    path: '/awhile',
+    name: 'awhile',
+    icon: 'table',
+    routes: [
+      {
+        path: '/awhile',
+        name: 'awhile',
+        icon: 'smile',
+        component: './Awhile',
+        title: '后台-一级时刻评论',
       },
     ],
   },

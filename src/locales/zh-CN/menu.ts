@@ -56,4 +56,6 @@ export default {
   'menu.comment': '评论',
   'menu.comment.one-comment': '一级评论',
   'menu.comment.two-comment': '二级评论',
+  'menu.awhile': '时刻',
+  'menu.awhile.awhile': '一级-时刻',
 };
