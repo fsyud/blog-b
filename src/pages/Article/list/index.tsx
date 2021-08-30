@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Form, Button, Table, message, Divider } from 'antd';
+import { Card, Input, Form, Button, Table, message, Divider, Popconfirm } from 'antd';
 import { getArticleList, deleteArticleList } from '@/services/artlist/api';
 import styles from './index.less';
+
+const text = '您确定要删除此数据吗？请谨慎操作';
 
 const ArticleList: React.FC<{}> = () => {
   const [page, setPage] = useState<number>(1);
@@ -12,8 +14,9 @@ const ArticleList: React.FC<{}> = () => {
   const getArtList = async (): Promise<any> => {
     const res: API.reponseData = await getArticleList({
       page: 1,
-      pageSize: 15,
+      pageSize: 100,
     });
+
     if (res && Array.isArray(res.data)) {
       setListData(res.data);
     }
@@ -41,36 +44,85 @@ const ArticleList: React.FC<{}> = () => {
         return <img style={{ width: 50 }} src={value} alt="avatar" />;
       },
     },
-
     {
       title: '文章标题',
       dataIndex: 'title',
       key: 'title',
+      render: (value: any) => {
+        return (
+          <div
+            title={value}
+            style={{
+              width: 300,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {value}
+          </div>
+        );
+      },
     },
     {
-      title: '类型',
+      title: '文章描述',
+      dataIndex: 'desc',
+      key: 'desc',
+      render: (value: any) => {
+        return (
+          <div
+            title={value}
+            style={{
+              width: 150,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {value}
+          </div>
+        );
+      },
+    },
+    {
+      title: '标签',
       dataIndex: 'type',
       key: 'type',
     },
     {
       title: '作者',
-      dataIndex: 'author',
-      key: 'author',
+      dataIndex: 'author_user_info',
+      key: 'author_user_info.username',
+      render: (value: any) => {
+        return value.username;
+      },
+    },
+    {
+      title: '作者权限',
+      dataIndex: 'author_user_info',
+      key: 'author_user_info.type',
+      render: (value: any) => {
+        return value.type === '1' ? '管理员' : '注册会员';
+      },
     },
     {
       title: '操作',
       dataIndex: 'option',
       key: 'option',
       render: (value: any, record: any) => [
-        <a
-          key="config"
-          onClick={() => {
+        <Popconfirm
+          placement="topRight"
+          style={{ width: 100 }}
+          title={text}
+          onConfirm={() => {
             const { _id } = record;
             onCancel(_id);
           }}
+          okText="确认"
+          cancelText="否"
         >
-          删除
-        </a>,
+          <a>删除</a>
+        </Popconfirm>,
       ],
     },
   ];

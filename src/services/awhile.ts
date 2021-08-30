@@ -8,7 +8,7 @@ export async function getAwhileList(params: any) {
   });
 }
 
-// 获取时刻列表
+// 删除一级时刻
 export async function deleteAwhileOneLevel(params: string) {
   return request('/api/awhile/removeOne', {
     method: 'Delete',

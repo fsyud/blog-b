@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Form, Button, Table, message, Divider } from 'antd';
+import { Card, Input, Form, Button, Table, message, Divider, Popconfirm } from 'antd';
 import { getAwhileList, deleteAwhileOneLevel } from '@/services/awhile';
 import styles from './index.less';
+
+const text = '您确定要删除此数据吗？';
 
 const ArticleList: React.FC<{}> = () => {
   const [page, setPage] = useState<number>(1);
@@ -67,9 +69,22 @@ const ArticleList: React.FC<{}> = () => {
     {
       title: '一级-内容',
       dataIndex: 'oneWhile',
+      width: 300,
       key: 'oneWhile.content',
       render: (value: any) => {
-        return value.content;
+        return (
+          <div
+            title={value.content}
+            style={{
+              width: 300,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {value.content}
+          </div>
+        );
       },
     },
     {
@@ -77,15 +92,19 @@ const ArticleList: React.FC<{}> = () => {
       dataIndex: 'option',
       key: 'option',
       render: (value: any, record: any) => [
-        <a
-          key="config"
-          onClick={() => {
+        <Popconfirm
+          placement="topRight"
+          style={{ width: 100 }}
+          title={text}
+          onConfirm={() => {
             const { _id } = record;
             onCancel(_id);
           }}
+          okText="确认"
+          cancelText="否"
         >
-          删除
-        </a>,
+          <a>删除</a>,
+        </Popconfirm>,
       ],
     },
   ];

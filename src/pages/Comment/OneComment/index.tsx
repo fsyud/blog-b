@@ -13,7 +13,7 @@ import {
   Upload,
 } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import { getUserList, deleteUser } from '@/services/user';
+import { getCommentList, deleteCommentOneLevel } from '@/services/comment';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
@@ -31,23 +31,24 @@ const OneComment: React.FC<{}> = () => {
 
   const text = '您确定要删除此数据吗？';
 
-  const getArtList = async (): Promise<any> => {
-    const res: API.reponseData = await getUserList();
+  const getOneCommentList = async (): Promise<any> => {
+    const res: API.reponseData = await getCommentList({});
+
     if (res && Array.isArray(res.data)) {
       setListData(res.data);
     }
   };
 
   useEffect(() => {
-    getArtList();
+    getOneCommentList();
   }, []);
 
   // 删除
   const onCancel = async (params: any) => {
-    const { data } = await deleteUser(params);
+    const { data } = await deleteCommentOneLevel(params);
     if (data) {
       message.info(data.msg);
-      getArtList();
+      getOneCommentList();
     }
   };
 
@@ -105,39 +106,65 @@ const OneComment: React.FC<{}> = () => {
     {
       title: '头像',
       with: 50,
-      dataIndex: 'avatar_url',
-      key: 'avatar_url',
+      dataIndex: 'oneComment.avatar',
+      key: 'avatar',
       render: (value: string) => {
         return <img style={{ width: 50 }} src={value} alt="avatar" />;
       },
     },
     {
-      title: '注册账号',
-      dataIndex: 'name',
-      key: 'name',
+      title: '所在文章',
+      dataIndex: 'article_title',
+      key: 'article_title',
     },
     {
-      title: '用户名',
-      dataIndex: 'username',
-      key: 'username',
-    },
-    {
-      title: '类型',
-      dataIndex: 'type',
-      key: 'type',
-      render: (value: string) => {
-        return value === '1' ? '管理员' : '注册会员';
+      title: '是否审核',
+      dataIndex: 'is_handle',
+      key: 'is_handle',
+      render: (value: number) => {
+        return value === 1 ? '已审核' : '未审核';
       },
     },
     {
-      title: '工作',
-      dataIndex: 'job',
-      key: 'job',
+      title: '用户名',
+      dataIndex: 'oneComment',
+      key: 'oneComment.user_name',
+      render: (value: any) => {
+        return value.user_name;
+      },
     },
     {
-      title: '个人介绍',
-      dataIndex: 'introduce',
-      key: 'introduce',
+      title: '类型',
+      dataIndex: 'oneComment',
+      key: 'oneComment.type',
+      render: (value: any) => {
+        return value.type === '1' ? '管理员' : '注册会员';
+      },
+    },
+    {
+      title: '点赞数',
+      dataIndex: 'likes',
+      key: 'likes',
+    },
+    {
+      title: '内容',
+      dataIndex: 'content',
+      key: 'content',
+      render: (value: any) => {
+        return (
+          <div
+            title={value}
+            style={{
+              width: 300,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {value}
+          </div>
+        );
+      },
     },
     {
       title: '操作',

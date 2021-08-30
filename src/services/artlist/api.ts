@@ -32,3 +32,13 @@ export async function deleteArticleList(params: number | string) {
     },
   });
 }
+
+// 获取文章详情
+export async function getArticleDetail(params: number | string) {
+  return request('/api/home/remove', {
+    method: 'GET',
+    params: {
+      id: params,
+    },
+  });
+}
