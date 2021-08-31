@@ -13,7 +13,7 @@ import {
   Upload,
 } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import { getCommentList, deleteCommentOneLevel } from '@/services/comment';
+import { getCommentList, deleteCommentOneLevel, auditOneComment } from '@/services/comment';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
@@ -33,7 +33,6 @@ const OneComment: React.FC<{}> = () => {
 
   const getOneCommentList = async (): Promise<any> => {
     const res: API.reponseData = await getCommentList({});
-
     if (res && Array.isArray(res.data)) {
       setListData(res.data);
     }
@@ -52,14 +51,18 @@ const OneComment: React.FC<{}> = () => {
     }
   };
 
-  // 编辑
-  // const onEdit = async (params: any) => {
-  //   const { data } = await deleteUser(params);
-  //   if (data) {
-  //     message.info(data.msg);
-  //     getArtList();
-  //   }
-  // };
+  /**
+   * @description: 审核文章
+   * @param {any} params
+   * @return {*}
+   */
+  const onAudit = async (params: string, article: string) => {
+    const { data } = await auditOneComment({ id: params, article_id: article });
+    if (data) {
+      message.info(data.msg);
+      getOneCommentList();
+    }
+  };
 
   const getBase64 = (img: any, callback: any) => {
     const reader = new FileReader();
@@ -119,10 +122,10 @@ const OneComment: React.FC<{}> = () => {
     },
     {
       title: '是否审核',
-      dataIndex: 'is_handle',
-      key: 'is_handle',
+      dataIndex: 'state',
+      key: 'state',
       render: (value: number) => {
-        return value === 1 ? '已审核' : '未审核';
+        return value === 1 ? '未审核' : '已审核';
       },
     },
     {
@@ -172,6 +175,21 @@ const OneComment: React.FC<{}> = () => {
       key: 'option',
       render: (value: any, record: any) => (
         <Space size="middle">
+          <Popconfirm
+            placement="topRight"
+            style={{ width: 100 }}
+            title={'已确认内容合法性，确认审核！'}
+            onConfirm={() => {
+              console.log(record);
+
+              const { _id, article_id } = record;
+              onAudit(_id, article_id);
+            }}
+            okText="确认"
+            cancelText="否"
+          >
+            <a style={{ marginLeft: 10 }}>审核</a>
+          </Popconfirm>
           <a
             key="config"
             onClick={() => {
@@ -222,6 +240,7 @@ const OneComment: React.FC<{}> = () => {
           columns={columns}
           rowKey="user-list-table"
           dataSource={listData}
+          bordered
           pagination={{
             total: 100,
             pageSize: 100,

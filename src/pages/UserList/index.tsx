@@ -222,6 +222,7 @@ const UserList: React.FC<{}> = () => {
         <Table
           columns={columns}
           rowKey="user-list-table"
+          bordered
           dataSource={listData}
           pagination={{
             total: 100,

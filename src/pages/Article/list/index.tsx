@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Form, Button, Table, message, Divider, Popconfirm } from 'antd';
-import { getArticleList, deleteArticleList } from '@/services/artlist/api';
+import { Card, Input, Form, Button, Table, message, Divider, Popconfirm, Drawer } from 'antd';
+import {
+  getArticleList,
+  deleteArticleList,
+  auditArticleList,
+  getArticleDetail,
+} from '@/services/artlist/api';
+import { MarkedTool } from '@/utils/marked';
 import styles from './index.less';
+import './index.css';
 
-const text = '您确定要删除此数据吗？请谨慎操作';
+const text = '您确定要删除此文章吗？删除不可恢复，请谨慎操作';
 
 const ArticleList: React.FC<{}> = () => {
-  const [page, setPage] = useState<number>(1);
-  const [listData, setListData] = useState<any[]>([]);
-
   const [form] = Form.useForm();
 
+  const [page, setPage] = useState<number>(1);
+  const [listData, setListData] = useState<any[]>([]);
+  const [modalVisable, setModalVisable] = useState<boolean>(false);
+  const [artDetail, setArtDetail] = useState<string>('');
+
+  /**
+   * @description: 获取文章列表
+   * @param {*} Promise
+   * @return {*}
+   */
   const getArtList = async (): Promise<any> => {
     const res: API.reponseData = await getArticleList({
       page: 1,
@@ -26,6 +40,11 @@ const ArticleList: React.FC<{}> = () => {
     getArtList();
   }, []);
 
+  /**
+   * @description: 删除文章
+   * @param {any} params
+   * @return {*}
+   */
   const onCancel = async (params: any) => {
     const { data } = await deleteArticleList(params);
     if (data) {
@@ -34,6 +53,40 @@ const ArticleList: React.FC<{}> = () => {
     }
   };
 
+  /**
+   * @description: 审核文章
+   * @param {any} params
+   * @return {*}
+   */
+  const onAudit = async (params: string) => {
+    const { data } = await auditArticleList(params);
+    if (data) {
+      message.info(data.msg);
+      getArtList();
+    }
+  };
+
+  /**
+   * @description: 获取文章详情
+   * @param {string} params
+   * @return {*}
+   */
+  const showDetail = async (params: string) => {
+    const { data } = await getArticleDetail(params);
+
+    if (data) {
+      setArtDetail(data?.content || '');
+      setTimeout(() => {
+        setModalVisable(true);
+      });
+    }
+  };
+
+  /**
+   * @description: 文章列配置
+   * @param {*}
+   * @return {*}
+   */
   const columns: any[] = [
     {
       title: '封面图片',
@@ -53,7 +106,7 @@ const ArticleList: React.FC<{}> = () => {
           <div
             title={value}
             style={{
-              width: 300,
+              width: 150,
               overflow: 'hidden',
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',
@@ -90,6 +143,23 @@ const ArticleList: React.FC<{}> = () => {
       key: 'type',
     },
     {
+      title: '文章状态',
+      dataIndex: 'state',
+      key: 'state',
+      render: (value: any) => {
+        if (value === 1) {
+          return '草稿箱';
+        }
+        if (value === 2) {
+          return '未审核';
+        }
+        if (value === 3) {
+          return '已审核';
+        }
+        return '';
+      },
+    },
+    {
       title: '作者',
       dataIndex: 'author_user_info',
       key: 'author_user_info.username',
@@ -113,6 +183,28 @@ const ArticleList: React.FC<{}> = () => {
         <Popconfirm
           placement="topRight"
           style={{ width: 100 }}
+          title={'已确认内容合法性，确认审核！'}
+          onConfirm={() => {
+            const { _id } = record;
+            onAudit(_id);
+          }}
+          okText="确认"
+          cancelText="否"
+        >
+          <a style={{ marginLeft: 10 }}>审核</a>
+        </Popconfirm>,
+        <a
+          style={{ marginLeft: 10 }}
+          onClick={() => {
+            const { _id } = record;
+            showDetail(_id);
+          }}
+        >
+          详情
+        </a>,
+        <Popconfirm
+          placement="topRight"
+          style={{ width: 100 }}
           title={text}
           onConfirm={() => {
             const { _id } = record;
@@ -121,7 +213,7 @@ const ArticleList: React.FC<{}> = () => {
           okText="确认"
           cancelText="否"
         >
-          <a>删除</a>
+          <a style={{ marginLeft: 10 }}>删除</a>
         </Popconfirm>,
       ],
     },
@@ -151,6 +243,7 @@ const ArticleList: React.FC<{}> = () => {
         <Table
           key="article-table-list"
           columns={columns}
+          bordered
           rowKey="article-table-list"
           dataSource={listData}
           pagination={{
@@ -162,6 +255,24 @@ const ArticleList: React.FC<{}> = () => {
           }}
         ></Table>
       </Card>
+      <Drawer
+        title="文章详情"
+        placement="right"
+        width={800}
+        closable={false}
+        onClose={() => {
+          setModalVisable(false);
+          setArtDetail('');
+        }}
+        visible={modalVisable}
+      >
+        <div
+          className="marked-drawer"
+          dangerouslySetInnerHTML={{
+            __html: MarkedTool(artDetail),
+          }}
+        />
+      </Drawer>
     </div>
   );
 };

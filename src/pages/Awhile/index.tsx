@@ -133,6 +133,7 @@ const ArticleList: React.FC<{}> = () => {
         <Table
           key="article-table-list"
           columns={columns}
+          bordered
           rowKey="article-table-list"
           dataSource={listData}
           pagination={{

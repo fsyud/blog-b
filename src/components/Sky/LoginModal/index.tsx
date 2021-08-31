@@ -32,7 +32,7 @@ const LoginModal: React.FC<LoginModalProps> = (props) => {
   };
 
   return (
-    <Modal {...otherProps} forceRender footer={null} centered width={380}>
+    <Modal {...otherProps} forceRender footer={null} width={380}>
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}

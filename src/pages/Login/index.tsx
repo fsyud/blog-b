@@ -30,6 +30,7 @@ const Login: React.FC = () => {
     try {
       if (values?.name !== 'naze') {
         message.error('仅限管理员登录');
+        setSubmitting(false);
         return;
       }
       // 登录

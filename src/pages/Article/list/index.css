@@ -1,0 +1,5 @@
+body .marked-drawer pre {
+  background: rgb(243, 243, 243);
+  padding: 24px;
+  border-radius: 6px;
+}

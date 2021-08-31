@@ -9,7 +9,7 @@
   {
     path: '/userlist',
     name: 'userlist',
-    icon: 'smile',
+    icon: 'user',
     component: './UserList',
     title: '后台-用户列表',
   },
@@ -18,13 +18,6 @@
     name: 'article',
     icon: 'table',
     routes: [
-      {
-        path: '/article/create',
-        name: 'article-create',
-        icon: 'smile',
-        component: './Article/creat',
-        title: '后台-写文章',
-      },
       {
         path: '/article/list',
         name: 'article-list',
@@ -45,13 +38,6 @@
         icon: 'smile',
         component: './Comment/OneComment',
         title: '后台-一级评论',
-      },
-      {
-        path: '/comment/two-comment',
-        name: 'two-comment',
-        icon: 'table',
-        component: './Comment/TwoComment',
-        title: '后台-二级评论',
       },
     ],
   },
