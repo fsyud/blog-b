@@ -3,3 +3,7 @@ body .marked-drawer pre {
   padding: 24px;
   border-radius: 6px;
 }
+
+body .marked-drawer p img {
+  max-width: 752px;
+}
