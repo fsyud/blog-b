@@ -292,6 +292,7 @@ const OneComment: React.FC<{}> = () => {
         title: '操作',
         dataIndex: 'operation',
         key: 'operation',
+        align: 'center',
         render: (value: any, record: any) => (
           <Space size="middle">
             <Popconfirm
@@ -329,6 +330,7 @@ const OneComment: React.FC<{}> = () => {
     return (
       <Table
         rowKey="extra-table"
+        // @ts-ignore
         columns={extraColumns}
         dataSource={pmrams.secondCommit}
         pagination={false}
