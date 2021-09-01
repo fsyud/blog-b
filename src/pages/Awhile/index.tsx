@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Form, Button, Table, message, Divider, Popconfirm } from 'antd';
+import { Card, Input, Form, Button, Table, message, Divider, Popconfirm, Badge } from 'antd';
 import { getAwhileList, deleteAwhileOneLevel } from '@/services/awhile';
 import styles from './index.less';
 
@@ -26,12 +26,26 @@ const ArticleList: React.FC<{}> = () => {
     getArtList();
   }, []);
 
+  /**
+   * @description: 删除一级时刻
+   * @param {any} params
+   * @return {*}
+   */
   const onCancel = async (params: any) => {
     const { data } = await deleteAwhileOneLevel(params);
     if (data) {
       message.info(data.msg);
       getArtList();
     }
+  };
+
+  /**
+   * @description: 审核一级时刻
+   * @param {any} params
+   * @return {*}
+   */
+  const onAudit = async (params: string, article: string) => {
+    console.log(article, params);
   };
 
   const columns: any[] = [
@@ -50,7 +64,21 @@ const ArticleList: React.FC<{}> = () => {
       dataIndex: 'is_handle',
       key: 'is_handle',
       render: (value: number) => {
-        return value === 1 ? '已审核' : '未审核';
+        return (
+          <span>
+            {value === 1 ? (
+              <div>
+                <Badge status="error" />
+                未审核
+              </div>
+            ) : (
+              <div>
+                <Badge status="success" />
+                已审核
+              </div>
+            )}
+          </span>
+        );
       },
     },
     {
@@ -90,8 +118,22 @@ const ArticleList: React.FC<{}> = () => {
     {
       title: '操作',
       dataIndex: 'option',
+      align: 'center',
       key: 'option',
       render: (value: any, record: any) => [
+        <Popconfirm
+          placement="topRight"
+          style={{ width: 100 }}
+          title={'已确认内容合法性，确认审核！'}
+          onConfirm={() => {
+            const { _id, article_id } = record;
+            onAudit(_id, article_id);
+          }}
+          okText="确认"
+          cancelText="否"
+        >
+          <a>审核</a>
+        </Popconfirm>,
         <Popconfirm
           placement="topRight"
           style={{ width: 100 }}
@@ -103,7 +145,7 @@ const ArticleList: React.FC<{}> = () => {
           okText="确认"
           cancelText="否"
         >
-          <a>删除</a>,
+          <a style={{ marginLeft: 10 }}>删除</a>
         </Popconfirm>,
       ],
     },

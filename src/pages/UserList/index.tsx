@@ -166,6 +166,7 @@ const UserList: React.FC<{}> = () => {
     },
     {
       title: '操作',
+      align: 'center',
       dataIndex: 'option',
       key: 'option',
       render: (value: any, record: any) => (

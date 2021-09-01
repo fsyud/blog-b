@@ -1,40 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import { Card, Input, Form, Button, Table, message, Space, Popconfirm, Divider, Badge } from 'antd';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { removeTwoCommentProps, auditTwoCommentProps } from '@/services/comment/index.dto';
 import {
-  Card,
-  Input,
-  Form,
-  Button,
-  Table,
-  message,
-  Space,
-  Popconfirm,
-  Drawer,
-  Divider,
-  Upload,
-} from 'antd';
-import ImgCrop from 'antd-img-crop';
-import { getCommentList, deleteCommentOneLevel, auditOneComment } from '@/services/comment';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+  getCommentList,
+  deleteCommentOneLevel,
+  auditOneComment,
+  auditTwoComment,
+  removeTwoComment,
+} from '@/services/comment';
+import moment from 'moment';
 import styles from './index.less';
-
-const { TextArea } = Input;
 
 const OneComment: React.FC<{}> = () => {
   const [page, setPage] = useState<number>(1);
   const [listData, setListData] = useState<any[]>([]);
-  const [visible, setVisible] = useState<boolean>(false);
-  const [imgurl, setImgurl] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
 
   const [form] = Form.useForm();
-  const [formUser] = Form.useForm();
 
   const text = '您确定要删除此数据吗？';
 
   const getOneCommentList = async (): Promise<any> => {
     const res: API.reponseData = await getCommentList({});
     if (res && Array.isArray(res.data)) {
-      setListData(res.data);
+      const curData = res.data.map((s: any, i: number) => {
+        return { ...s, ...{ key: i } };
+      });
+      setListData(curData);
     }
   };
 
@@ -42,7 +34,11 @@ const OneComment: React.FC<{}> = () => {
     getOneCommentList();
   }, []);
 
-  // 删除
+  /**
+   * @description: 删除一级评论
+   * @param {any} params
+   * @return {*}
+   */
   const onCancel = async (params: any) => {
     const { data } = await deleteCommentOneLevel(params);
     if (data) {
@@ -52,7 +48,20 @@ const OneComment: React.FC<{}> = () => {
   };
 
   /**
-   * @description: 审核文章
+   * @description: 删除二级评论
+   * @param {any} params
+   * @return {*}
+   */
+  const onCancelTwo = async (pmrams: removeTwoCommentProps) => {
+    const { data } = await removeTwoComment(pmrams);
+    if (data) {
+      message.info(data.msg);
+      getOneCommentList();
+    }
+  };
+
+  /**
+   * @description: 审核一级评论
    * @param {any} params
    * @return {*}
    */
@@ -64,68 +73,83 @@ const OneComment: React.FC<{}> = () => {
     }
   };
 
-  const getBase64 = (img: any, callback: any) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  };
-
-  const onChange = ({ file }: any) => {
-    if (file?.response?.code === 0) {
-      // const { path } = file.response.data;
-      getBase64(file.originFileObj, (imageUrl: any) => {
-        setImgurl(imageUrl);
-        setLoading(false);
-      });
+  /**
+   * @description: 审核二级评论
+   * @param {any} params
+   * @return {*}
+   */
+  const onAuditTwo = async (query: auditTwoCommentProps) => {
+    const { data } = await auditTwoComment(query);
+    if (data) {
+      message.info(data.msg);
+      getOneCommentList();
     }
   };
-
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>上传文章封面</div>
-    </div>
-  );
 
   // 提交
   const onFinish = async (values: any): Promise<any> => {
     console.log(values);
   };
 
-  const beforeUpload = (file: any) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('请上传 JPG/PNG 格式的文件!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-
-    if (!isLt2M) {
-      message.error('图片请小于2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  };
-
   const columns: any[] = [
+    {
+      title: '创建时间',
+      dataIndex: 'create_times',
+      key: 'create_times',
+      width: 190,
+      render: (value: any) => {
+        return moment(value).format('YYYY-MM-DD HH:mm:ss');
+      },
+    },
     {
       title: '头像',
       with: 50,
-      dataIndex: 'oneComment.avatar',
-      key: 'avatar',
-      render: (value: string) => {
-        return <img style={{ width: 50 }} src={value} alt="avatar" />;
+      dataIndex: 'oneComment',
+      key: 'oneComment.avatar',
+      render: (value: any) => {
+        return <img style={{ width: 50 }} src={value.avatar} alt="avatar" />;
       },
     },
     {
       title: '所在文章',
       dataIndex: 'article_title',
       key: 'article_title',
+      render: (value: any) => {
+        return (
+          <div
+            title={value}
+            style={{
+              width: 100,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {value}
+          </div>
+        );
+      },
     },
     {
       title: '是否审核',
       dataIndex: 'state',
       key: 'state',
       render: (value: number) => {
-        return value === 1 ? '未审核' : '已审核';
+        return (
+          <span>
+            {value === 1 ? (
+              <div>
+                <Badge status="error" />
+                未审核
+              </div>
+            ) : (
+              <div>
+                <Badge status="success" />
+                已审核
+              </div>
+            )}
+          </span>
+        );
       },
     },
     {
@@ -150,6 +174,23 @@ const OneComment: React.FC<{}> = () => {
       key: 'likes',
     },
     {
+      title: '子评论',
+      dataIndex: 'secondCommit',
+      key: 'secondCommit.numbers',
+      render: (value: any[]) => {
+        return <a>{value.length}</a>;
+      },
+    },
+    {
+      title: '子未审',
+      dataIndex: 'secondCommit',
+      key: 'secondCommit.unAudit',
+      render: (value: any[]) => {
+        const datasUnAudit = value.filter((s: any) => s.state === 1);
+        return <a>{datasUnAudit?.length}</a>;
+      },
+    },
+    {
       title: '内容',
       dataIndex: 'content',
       key: 'content',
@@ -171,6 +212,7 @@ const OneComment: React.FC<{}> = () => {
     },
     {
       title: '操作',
+      align: 'center',
       dataIndex: 'option',
       key: 'option',
       render: (value: any, record: any) => (
@@ -180,8 +222,6 @@ const OneComment: React.FC<{}> = () => {
             style={{ width: 100 }}
             title={'已确认内容合法性，确认审核！'}
             onConfirm={() => {
-              console.log(record);
-
               const { _id, article_id } = record;
               onAudit(_id, article_id);
             }}
@@ -190,14 +230,6 @@ const OneComment: React.FC<{}> = () => {
           >
             <a style={{ marginLeft: 10 }}>审核</a>
           </Popconfirm>
-          <a
-            key="config"
-            onClick={() => {
-              setVisible(true);
-            }}
-          >
-            编辑
-          </a>
           <Popconfirm
             placement="topRight"
             style={{ width: 100 }}
@@ -215,6 +247,94 @@ const OneComment: React.FC<{}> = () => {
       ),
     },
   ];
+
+  /**
+   * @description: 扩展table
+   * @param {any} pmrams
+   * @return {*}
+   */
+  const expandedRowRender = (pmrams: any) => {
+    const extraColumns = [
+      {
+        title: '创建时间',
+        dataIndex: 'create_times',
+        key: 'create_times',
+        width: 200,
+        render: (value: any) => {
+          return moment(value).format('YYYY-MM-DD HH:mm:ss');
+        },
+      },
+      { title: '喜欢', dataIndex: 'likes', key: 'likes' },
+      {
+        title: '审核状态',
+        dataIndex: 'state',
+        key: 'state',
+        render: (value: number) => {
+          return (
+            <span>
+              {value === 1 ? (
+                <div>
+                  <Badge status="error" />
+                  未审核
+                </div>
+              ) : (
+                <div>
+                  <Badge status="success" />
+                  已审核
+                </div>
+              )}
+            </span>
+          );
+        },
+      },
+      { title: '回复内容', dataIndex: 'reply_content', key: 'reply_content' },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        key: 'operation',
+        render: (value: any, record: any) => (
+          <Space size="middle">
+            <Popconfirm
+              placement="topRight"
+              style={{ width: 100 }}
+              title={'已确认内容合法性，确认审核！'}
+              onConfirm={() => {
+                const { _id } = record;
+                onAuditTwo({ curId: _id, article_id: pmrams?.article_id });
+              }}
+              okText="确认"
+              cancelText="否"
+            >
+              <a style={{ marginLeft: 10 }}>审核</a>
+            </Popconfirm>
+            <Popconfirm
+              placement="topRight"
+              style={{ width: 100 }}
+              title={text}
+              onConfirm={() => {
+                const { _id, state } = record;
+                // eslint-disable-next-line no-underscore-dangle
+                onCancelTwo({ commmnetId: pmrams?._id, curId: _id, state });
+              }}
+              okText="确认"
+              cancelText="否"
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </Space>
+        ),
+      },
+    ];
+
+    return (
+      <Table
+        rowKey="extra-table"
+        columns={extraColumns}
+        dataSource={pmrams.secondCommit}
+        pagination={false}
+      />
+    );
+  };
 
   return (
     <div className={styles.user_list}>
@@ -238,7 +358,7 @@ const OneComment: React.FC<{}> = () => {
       <Card bordered={false}>
         <Table
           columns={columns}
-          rowKey="user-list-table"
+          expandable={{ expandedRowRender }}
           dataSource={listData}
           bordered
           pagination={{
@@ -248,69 +368,8 @@ const OneComment: React.FC<{}> = () => {
             onChange: (page) => setPage(page),
             current: page,
           }}
-        ></Table>
+        />
       </Card>
-      <Drawer
-        title="用户信息"
-        placement="right"
-        closable={false}
-        width={700}
-        onClose={() => setVisible(false)}
-        visible={visible}
-      >
-        <Form
-          name="basic"
-          labelCol={{ span: 3 }}
-          onFinish={onFinish}
-          wrapperCol={{ span: 21 }}
-          form={formUser}
-          initialValues={{ remember: true }}
-        >
-          <Form.Item label="用户头像">
-            <ImgCrop rotate aspect={3 / 2} modalTitle="裁剪图片，建议上传3/2比例的图片">
-              <Upload
-                action="/api/common/upload"
-                listType="picture-card"
-                showUploadList={false}
-                onChange={onChange}
-                beforeUpload={beforeUpload}
-              >
-                {imgurl ? (
-                  <img src={imgurl} alt="avatar" style={{ width: '100%' }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
-            </ImgCrop>
-            <span className={styles.upload_tips}>建议尺寸：1303*734px</span>
-          </Form.Item>
-          <Form.Item label="用户名" name="username">
-            <Input placeholder="填写你的用户名" />
-          </Form.Item>
-          <Divider />
-          <Form.Item label="职位" name="job">
-            <Input placeholder="填写你的职位" />
-          </Form.Item>
-          <Divider />
-          <Form.Item label="公司" name="company">
-            <Input placeholder="填写你的公司" />
-          </Form.Item>
-          <Divider />
-          <Form.Item label="个人介绍" name="introduce">
-            <TextArea
-              placeholder="填写职业技能、擅长的事情、喜欢的事情等"
-              allowClear
-              autoSize={{ minRows: 3, maxRows: 6 }}
-            />
-          </Form.Item>
-          <Divider />
-          <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              保存修改
-            </Button>
-          </Form.Item>
-        </Form>
-      </Drawer>
     </div>
   );
 };

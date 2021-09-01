@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Form, Button, Table, message, Divider, Popconfirm, Drawer } from 'antd';
+import {
+  Card,
+  Input,
+  Form,
+  Button,
+  Table,
+  message,
+  Divider,
+  Popconfirm,
+  Drawer,
+  Badge,
+} from 'antd';
 import {
   getArticleList,
   deleteArticleList,
@@ -148,13 +159,28 @@ const ArticleList: React.FC<{}> = () => {
       key: 'state',
       render: (value: any) => {
         if (value === 1) {
-          return '草稿箱';
+          return (
+            <div>
+              <Badge status="warning" />
+              草稿箱
+            </div>
+          );
         }
         if (value === 2) {
-          return '未审核';
+          return (
+            <div>
+              <Badge status="error" />
+              未审核
+            </div>
+          );
         }
         if (value === 3) {
-          return '已审核';
+          return (
+            <div>
+              <Badge status="success" />
+              已审核
+            </div>
+          );
         }
         return '';
       },
@@ -177,6 +203,7 @@ const ArticleList: React.FC<{}> = () => {
     },
     {
       title: '操作',
+      align: 'center',
       dataIndex: 'option',
       key: 'option',
       render: (value: any, record: any) => [

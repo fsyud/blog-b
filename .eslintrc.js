@@ -1,5 +1,16 @@
 module.exports = {
   extends: [require.resolve('@umijs/fabric/dist/eslint')],
+  rules: {
+    '@typescript-eslint/ban-types': [
+      'error',
+      {
+        extendDefaults: true,
+        types: {
+          '{}': false,
+        },
+      },
+    ],
+  },
   globals: {
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: true,
     page: true,
