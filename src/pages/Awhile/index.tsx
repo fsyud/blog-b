@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Form, Button, Table, message, Divider, Popconfirm, Badge } from 'antd';
-import { getAwhileList, deleteAwhileOneLevel } from '@/services/awhile';
+import moment from 'moment';
+import { Card, Input, Form, Button, Table, message, Divider, Popconfirm, Badge, Space } from 'antd';
+import {
+  getAwhileList,
+  deleteAwhileOneLevel,
+  auditOneWhile,
+  auditTwoWhile,
+  removeTwoWhile,
+} from '@/services/awhile';
+import type { auditTwoAwhileProps } from '@/services/awhile/index.dto';
+
 import styles from './index.less';
 
 const text = '您确定要删除此数据吗？';
@@ -18,7 +27,10 @@ const ArticleList: React.FC<{}> = () => {
       tag: 999,
     });
     if (res && Array.isArray(res.data)) {
-      setListData(res.data);
+      const curData = res.data.map((s: any, i: number) => {
+        return { ...s, ...{ key: i } };
+      });
+      setListData(curData);
     }
   };
 
@@ -44,25 +56,37 @@ const ArticleList: React.FC<{}> = () => {
    * @param {any} params
    * @return {*}
    */
-  const onAudit = async (params: string, article: string) => {
-    console.log(article, params);
+  const onAudit = async (id: any) => {
+    const { data } = await auditOneWhile({ id });
+    if (data) {
+      message.info(data.msg);
+      getArtList();
+    }
   };
 
   const columns: any[] = [
     {
-      title: '封面图片',
-      with: 50,
-      dataIndex: 'img_url',
-      key: 'img_url',
-      render: (value: string) => {
-        return <img style={{ width: 50 }} src={value} alt="avatar" />;
+      title: '创建时间',
+      dataIndex: 'create_times',
+      key: 'create_times',
+      width: 190,
+      render: (value: any) => {
+        return value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : '';
       },
     },
-
+    {
+      title: '头像',
+      with: 50,
+      dataIndex: 'oneWhile',
+      key: 'oneWhile.avatar',
+      render: (value: any) => {
+        return <img style={{ width: 50 }} src={value.avatar} alt="avatar" />;
+      },
+    },
     {
       title: '是否审核',
-      dataIndex: 'is_handle',
-      key: 'is_handle',
+      dataIndex: 'state',
+      key: 'state',
       render: (value: number) => {
         return (
           <span>
@@ -85,6 +109,9 @@ const ArticleList: React.FC<{}> = () => {
       title: '标签',
       dataIndex: 'tag',
       key: 'tag',
+      render: (value: any) => {
+        return value === 999 ? '无' : value;
+      },
     },
     {
       title: '一级-作者',
@@ -126,8 +153,8 @@ const ArticleList: React.FC<{}> = () => {
           style={{ width: 100 }}
           title={'已确认内容合法性，确认审核！'}
           onConfirm={() => {
-            const { _id, article_id } = record;
-            onAudit(_id, article_id);
+            const { _id } = record;
+            onAudit(_id);
           }}
           okText="确认"
           cancelText="否"
@@ -156,6 +183,122 @@ const ArticleList: React.FC<{}> = () => {
     console.log(values);
   };
 
+  /**
+   * @description: 审核二级时刻
+   * @param {any} params
+   * @return {*}
+   */
+  const onAuditTwo = async (query: auditTwoAwhileProps) => {
+    const { data } = await auditTwoWhile(query);
+    if (data) {
+      message.info(data.msg);
+      getArtList();
+    }
+  };
+
+  /**
+   * @description: 删除二级评论
+   * @param {any} params
+   * @return {*}
+   */
+  const onCancelTwo = async (pmrams: auditTwoAwhileProps) => {
+    const { data } = await removeTwoWhile(pmrams);
+    if (data) {
+      message.info(data.msg);
+      getArtList();
+    }
+  };
+
+  /**
+   * @description: 扩展table
+   * @param {any} pmrams
+   * @return {*}
+   */
+  const expandedRowRender = (pmrams: any) => {
+    const extraColumns = [
+      {
+        title: '创建时间',
+        dataIndex: 'create_times',
+        key: 'create_times',
+        width: 200,
+        render: (value: any) => {
+          return moment(value).format('YYYY-MM-DD HH:mm:ss');
+        },
+      },
+      { title: '喜欢', dataIndex: 'likes', key: 'likes' },
+      {
+        title: '审核状态',
+        dataIndex: 'state',
+        key: 'state',
+        render: (value: number) => {
+          return (
+            <span>
+              {value === 1 ? (
+                <div>
+                  <Badge status="error" />
+                  未审核
+                </div>
+              ) : (
+                <div>
+                  <Badge status="success" />
+                  已审核
+                </div>
+              )}
+            </span>
+          );
+        },
+      },
+      { title: '回复内容', dataIndex: 'reply_content', key: 'reply_content' },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        key: 'operation',
+        align: 'center',
+        render: (value: any, record: any) => (
+          <Space size="middle">
+            <Popconfirm
+              placement="topRight"
+              style={{ width: 100 }}
+              title={'已确认内容合法性，确认审核！'}
+              onConfirm={() => {
+                const { _id } = record;
+                onAuditTwo({ curId: _id, parent_awhile_id: pmrams?.article_id });
+              }}
+              okText="确认"
+              cancelText="否"
+            >
+              <a style={{ marginLeft: 10 }}>审核</a>
+            </Popconfirm>
+            <Popconfirm
+              placement="topRight"
+              style={{ width: 100 }}
+              title={text}
+              onConfirm={() => {
+                const { _id } = record;
+                // eslint-disable-next-line no-underscore-dangle
+                onCancelTwo({ parent_awhile_id: pmrams?._id, curId: _id });
+              }}
+              okText="确认"
+              cancelText="否"
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </Space>
+        ),
+      },
+    ];
+
+    return (
+      <Table
+        rowKey="extra-table"
+        // @ts-ignore
+        columns={extraColumns}
+        dataSource={pmrams.secondWhile}
+        pagination={false}
+      />
+    );
+  };
+
   return (
     <div className={styles.art_list}>
       <Card bordered={false} className={styles.search}>
@@ -173,10 +316,9 @@ const ArticleList: React.FC<{}> = () => {
       <Divider />
       <Card bordered={false}>
         <Table
-          key="article-table-list"
           columns={columns}
           bordered
-          rowKey="article-table-list"
+          expandable={{ expandedRowRender }}
           dataSource={listData}
           pagination={{
             total: 100,
@@ -185,7 +327,7 @@ const ArticleList: React.FC<{}> = () => {
             onChange: (page) => setPage(page),
             current: page,
           }}
-        ></Table>
+        />
       </Card>
     </div>
   );

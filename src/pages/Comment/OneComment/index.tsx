@@ -87,8 +87,8 @@ const OneComment: React.FC<{}> = () => {
   };
 
   // 提交
-  const onFinish = async (values: any): Promise<any> => {
-    console.log(values);
+  const onFinish = async (): Promise<any> => {
+    getOneCommentList();
   };
 
   const columns: any[] = [
@@ -353,9 +353,6 @@ const OneComment: React.FC<{}> = () => {
         </Form>
       </Card>
       <Divider />
-      <Card bordered={false} className={styles.tool}>
-        <Button type="primary">用户注册</Button>
-      </Card>
 
       <Card bordered={false}>
         <Table
