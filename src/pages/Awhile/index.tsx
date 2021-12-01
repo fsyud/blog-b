@@ -114,6 +114,22 @@ const ArticleList: React.FC<{}> = () => {
       },
     },
     {
+      title: '点赞数',
+      dataIndex: 'meta',
+      key: 'meta.likes',
+      render: (value: any) => {
+        return value?.likes;
+      },
+    },
+    {
+      title: '子评论',
+      dataIndex: 'secondCommit',
+      key: 'secondCommit.numbers',
+      render: (value: any, record: any) => {
+        return record.secondWhile?.length;
+      },
+    },
+    {
       title: '一级-作者',
       dataIndex: 'oneWhile',
       key: 'oneWhile.user_name',
