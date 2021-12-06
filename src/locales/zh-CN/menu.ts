@@ -58,4 +58,6 @@ export default {
   'menu.comment.two-comment': '二级评论',
   'menu.awhile': '时刻',
   'menu.awhile.awhile': '一级-时刻',
+  'menu.proitem': '项目',
+  'menu.proitem.proitem': '项目',
 };

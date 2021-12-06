@@ -13,7 +13,7 @@ const LoginModal: React.FC<LoginModalProps> = (props) => {
   const [form] = Form.useForm();
   useEffect(() => {
     if (!props.visible) form.resetFields();
-  }, [props.visible]);
+  }, [props.visible, form]);
 
   const onFinish = async (values: any): Promise<any> => {
     const { data } = await userRegister(values);

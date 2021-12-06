@@ -56,6 +56,20 @@
     ],
   },
   {
+    path: '/proitem',
+    name: 'proitem',
+    icon: 'table',
+    routes: [
+      {
+        path: '/proitem',
+        name: 'proitem',
+        icon: 'smile',
+        component: './ProItem',
+        title: '后台-项目',
+      },
+    ],
+  },
+  {
     path: '/',
     redirect: '/article/list',
   },
