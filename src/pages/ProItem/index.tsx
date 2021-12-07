@@ -115,6 +115,18 @@ const ProItem: React.FC<{}> = () => {
       key: 'desc',
     },
     {
+      title: '项目链接',
+      dataIndex: 'links',
+      key: 'links',
+      render: (value: string) => {
+        return (
+          <a href={value} target="_blank">
+            {value}
+          </a>
+        );
+      },
+    },
+    {
       title: '操作',
       align: 'center',
       dataIndex: 'option',
@@ -218,9 +230,16 @@ const ProItem: React.FC<{}> = () => {
             name="img_url"
             rules={[{ required: true, message: '请输入封面图片路径！' }]}
           >
-            <Input.TextArea placeholder="描述" />
+            <Input.TextArea placeholder="封面图片路径" />
           </Form.Item>
 
+          <Form.Item
+            label="项目链接"
+            name="links"
+            rules={[{ required: true, message: '请输入项目链接！' }]}
+          >
+            <Input.TextArea placeholder="项目链接" />
+          </Form.Item>
           <Form.Item wrapperCol={{ span: 24 }}>
             <Button block type="primary" htmlType="submit">
               添加
