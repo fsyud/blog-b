@@ -13,7 +13,8 @@
     <img alt="License: MIT" src="https://img.shields.io/github/license/starryskystar/blog-b" />
   </a>
 </p>
-![2123123](https://user-images.githubusercontent.com/26371465/145000659-77dc09a0-f890-49c8-9b0a-aab019eca148.gif)
+![2123123](https://user-images.githubusercontent.com/26371465/145000731-5e910c78-f912-45df-8f82-aa2dd1384d84.gif)
+
 
 
 
