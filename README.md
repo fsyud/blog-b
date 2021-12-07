@@ -13,6 +13,9 @@
     <img alt="License: MIT" src="https://img.shields.io/github/license/starryskystar/blog-b" />
   </a>
 </p>
+![2123123](https://user-images.githubusercontent.com/26371465/145000659-77dc09a0-f890-49c8-9b0a-aab019eca148.gif)
+
+
 
 > 基于 react、antd-pro 开发的博客 b 端，功能实现了文章过滤筛选，评论、多角色权限、移动端适配、图片上传、在线文章书写等功能。后端服务基于 nestjs。后续可能会升级 ssr 的版本，谢谢关注！
 
